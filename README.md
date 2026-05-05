@@ -19,7 +19,7 @@ A web-based application designed to streamline the editing of multiple text file
 
 ## Usage
 
-1. **Access the Tool**: Visit the live application at (https://nuhbodyok.github.io/bulk-file-edit/)](https://nuhbodyok.github.io/bulk-file-edit/)).
+1. **Access the Tool**: Visit the live application at [(https://nuhbodyok.github.io/bulk-file-edit/)](https://nuhbodyok.github.io/bulk-file-edit/))](https://nuhbodyok.github.io/bulk-file-edit/).
 
 2. **Select Files**: Click on the "Select Files" button to upload your `.txt` or `.md` files.
 
