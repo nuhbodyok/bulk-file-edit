@@ -8,513 +8,369 @@
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#5D5CDE',
-                    }
-                }
-            }
+            theme: { extend: { colors: { primary: '#5D5CDE' } } }
         }
     </script>
     <style>
         .file-input::file-selector-button {
-            padding: 0.5rem 1rem;
+            padding: 0.375rem 0.75rem;
             border-radius: 0.375rem;
             border: none;
             background-color: #5D5CDE;
             color: white;
             cursor: pointer;
-            margin-right: 1rem;
+            margin-right: 0.75rem;
             font-size: 0.875rem;
         }
-        
-        .dark .file-input::file-selector-button {
-            background-color: #6766e3;
-        }
-        
-        .file-item {
-            transition: all 0.3s ease;
-        }
-        
-        .loading-spinner {
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Diff highlighting styles */
-        .diff-added {
-            background-color: rgba(0, 255, 0, 0.1);
-            color: #22c55e;
-        }
-        
-        .diff-removed {
-            background-color: rgba(255, 0, 0, 0.1);
-            color: #ef4444;
-            text-decoration: line-through;
-        }
-        
-        .dark .diff-added {
-            background-color: rgba(0, 255, 0, 0.05);
-            color: #4ade80;
-        }
-        
-        .dark .diff-removed {
-            background-color: rgba(255, 0, 0, 0.05);
-            color: #f87171;
-        }
-        
-        /* Line numbers */
-        .line-numbers {
-            counter-reset: line;
-            color: #9ca3af;
-            text-align: right;
-            user-select: none;
-        }
-        
-        .line-number {
-            padding-right: 0.5rem;
-            border-right: 1px solid #e5e7eb;
-            margin-right: 0.5rem;
-        }
-        
-        .dark .line-number {
-            border-right-color: #374151;
-        }
-        
-        /* Progress bar */
-        .progress-bar {
-            height: 6px;
-            background-color: #e5e7eb;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        
-        .progress-bar-fill {
-            height: 100%;
-            background-color: #5D5CDE;
-            transition: width 0.3s ease;
-        }
-        
-        .dark .progress-bar {
-            background-color: #374151;
-        }
-        
-        /* Toast notifications */
+        .dark .file-input::file-selector-button { background-color: #6766e3; }
+
+        .progress-bar { height: 6px; background-color: #e5e7eb; border-radius: 3px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background-color: #5D5CDE; transition: width 0.3s ease; }
+        .dark .progress-bar { background-color: #374151; }
+
+        .diff-added { background-color: rgba(0,255,0,0.08); color: #22c55e; }
+        .diff-removed { background-color: rgba(255,0,0,0.08); color: #ef4444; text-decoration: line-through; }
+        .dark .diff-added { background-color: rgba(0,255,0,0.04); color: #4ade80; }
+        .dark .diff-removed { background-color: rgba(255,0,0,0.04); color: #f87171; }
+
+        .line-numbers { color: #9ca3af; text-align: right; user-select: none; }
+        .line-number { padding-right: 0.5rem; border-right: 1px solid #e5e7eb; margin-right: 0.5rem; }
+        .dark .line-number { border-right-color: #374151; }
+
+        /* Toast — all color variants pre-declared so Tailwind CDN includes them */
         .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            border-radius: 6px;
-            background-color: #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            transform: translateY(100px);
-            opacity: 0;
+            position: fixed; bottom: 16px; right: 16px;
+            padding: 8px 16px; border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000; font-size: 0.875rem;
+            transform: translateY(100px); opacity: 0;
             transition: transform 0.3s ease, opacity 0.3s ease;
+            border-left-width: 4px;
         }
-        
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        
-        .dark .toast {
-            background-color: #374151;
-        }
-        
-        /* Syntax highlighting */
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast-success { background-color: #f0fdf4; border-color: #22c55e; color: #166534; }
+        .toast-error   { background-color: #fef2f2; border-color: #ef4444; color: #991b1b; }
+        .toast-info    { background-color: #eff6ff; border-color: #3b82f6; color: #1e40af; }
+        .dark .toast-success { background-color: rgba(22,163,74,0.15); color: #86efac; }
+        .dark .toast-error   { background-color: rgba(239,68,68,0.15);  color: #fca5a5; }
+        .dark .toast-info    { background-color: rgba(59,130,246,0.15); color: #93c5fd; }
+
         .md-header { color: #0369a1; }
-        .md-bold { font-weight: bold; }
+        .md-bold   { font-weight: bold; }
         .md-italic { font-style: italic; }
-        .md-link { color: #2563eb; }
-        .md-code { color: #d97706; background-color: rgba(243, 244, 246, 0.7); padding: 0 0.25rem; }
-        .md-list { color: #059669; }
-        
+        .md-link   { color: #2563eb; }
+        .md-code   { color: #d97706; background-color: rgba(243,244,246,0.7); padding: 0 0.25rem; }
+        .md-list   { color: #059669; }
         .dark .md-header { color: #38bdf8; }
-        .dark .md-link { color: #60a5fa; }
-        .dark .md-code { color: #fbbf24; background-color: rgba(31, 41, 55, 0.7); }
-        .dark .md-list { color: #34d399; }
+        .dark .md-link   { color: #60a5fa; }
+        .dark .md-code   { color: #fbbf24; background-color: rgba(31,41,55,0.7); }
+        .dark .md-list   { color: #34d399; }
     </style>
 </head>
 <body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
-    <div class="container mx-auto px-4 py-8 max-w-4xl">
-        <h1 class="text-3xl font-bold text-primary mb-6">File Batch Editor</h1>
-        
-        <!-- File Upload Section -->
-        <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm">
-            <h2 class="text-xl font-semibold mb-4">Step 1: Import Files</h2>
-            <div class="mb-4">
-                <input type="file" id="fileInput" multiple accept=".txt,.md,.csv,.json,.html,.css,.js" 
-                       class="file-input block w-full text-base border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800"
-                       aria-label="Select files">
-                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    Supported formats: TXT, MD, CSV, JSON, HTML, CSS, JS
-                </p>
-            </div>
-            <div id="uploadProgress" class="hidden mb-4">
+    <div class="container mx-auto px-3 py-5 max-w-4xl">
+        <h1 class="text-2xl font-bold text-primary mb-4">File Batch Editor</h1>
+
+        <!-- Step 1: Import -->
+        <div class="mb-5 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm">
+            <h2 class="text-base font-semibold mb-3">Step 1: Import Files</h2>
+            <input type="file" id="fileInput" multiple accept=".txt,.md,.csv,.json,.html,.css,.js"
+                   class="file-input block w-full text-sm border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800"
+                   aria-label="Select files">
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Supported: TXT, MD, CSV, JSON, HTML, CSS, JS</p>
+            <div id="uploadProgress" class="hidden mt-3">
                 <div class="flex justify-between mb-1">
-                    <span id="progressText" class="text-sm text-gray-500 dark:text-gray-400">Processing files...</span>
-                    <span id="progressPercent" class="text-sm text-gray-500 dark:text-gray-400">0%</span>
+                    <span id="progressText" class="text-xs text-gray-500 dark:text-gray-400">Processing files...</span>
+                    <span id="progressPercent" class="text-xs text-gray-500 dark:text-gray-400">0%</span>
                 </div>
-                <div class="progress-bar">
-                    <div id="progressBarFill" class="progress-bar-fill" style="width: 0%"></div>
-                </div>
+                <div class="progress-bar"><div id="progressBarFill" class="progress-bar-fill" style="width:0%"></div></div>
             </div>
-            <div id="fileList" class="space-y-2 mt-4"></div>
+            <div id="fileList" class="mt-3 space-y-2"></div>
         </div>
-        
-        <!-- Operations Section -->
-        <div id="operationsSection" class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm opacity-50 pointer-events-none">
-            <h2 class="text-xl font-semibold mb-4">Step 2: Select Operation</h2>
-            
-            <div class="mb-6">
-                <select id="operationType" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-base" aria-label="Select operation type">
-                    <option value="find-replace">Find and Replace</option>
-                    <option value="remove-lines">Remove Lines Containing</option>
-                    <option value="remove-empty">Remove Empty Lines</option>
-                    <option value="trim-lines">Trim Whitespace</option>
-                    <option value="add-prefix-suffix">Add Prefix/Suffix</option>
-                    <option value="line-sorting">Sort Lines</option>
-                    <option value="convert-case">Convert Case</option>
-                    <option value="convert-format">Convert File Format</option>
-                    <option value="batch-rename">Batch Rename Files</option>
-                </select>
-            </div>
-            
-            <div id="operationParams" class="space-y-4">
-                <!-- Find and Replace parameters -->
+
+        <!-- Step 2: Operations -->
+        <div id="operationsSection" class="mb-5 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm opacity-50 pointer-events-none">
+            <h2 class="text-base font-semibold mb-3">Step 2: Select Operation</h2>
+            <select id="operationType" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-sm mb-4" aria-label="Select operation type">
+                <option value="find-replace">Find and Replace</option>
+                <option value="remove-lines">Remove Lines Containing</option>
+                <option value="remove-empty">Remove Empty Lines</option>
+                <option value="trim-lines">Trim Whitespace</option>
+                <option value="add-prefix-suffix">Add Prefix/Suffix</option>
+                <option value="line-sorting">Sort Lines</option>
+                <option value="convert-case">Convert Case</option>
+                <option value="convert-format">Convert File Format</option>
+                <option value="batch-rename">Batch Rename Files</option>
+            </select>
+
+            <div id="operationParams">
+                <!-- Find and Replace -->
                 <div id="findReplaceParams">
-                    <div class="mb-4">
-                        <label for="findText" class="block mb-2 font-medium">Find:</label>
-                        <input type="text" id="findText" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-base">
+                    <div class="mb-3">
+                        <label for="findText" class="block mb-1 text-sm font-medium">Find:</label>
+                        <input type="text" id="findText" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-sm">
                     </div>
-                    <div class="mb-4">
-                        <label for="replaceText" class="block mb-2 font-medium">Replace with:</label>
-                        <input type="text" id="replaceText" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-base">
+                    <div class="mb-3">
+                        <label for="replaceText" class="block mb-1 text-sm font-medium">Replace with:</label>
+                        <input type="text" id="replaceText" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-sm">
                     </div>
-                    <div class="flex items-center mb-4">
-                        <input type="checkbox" id="caseSensitive" class="w-4 h-4 text-primary">
-                        <label for="caseSensitive" class="ml-2">Case sensitive</label>
-                    </div>
-                    <div class="flex items-center mb-4">
-                        <input type="checkbox" id="regexEnabled" class="w-4 h-4 text-primary">
-                        <label for="regexEnabled" class="ml-2">Use regular expression</label>
+                    <div class="flex gap-4 flex-wrap">
+                        <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+                            <input type="checkbox" id="caseSensitive" class="w-4 h-4"> Case sensitive
+                        </label>
+                        <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+                            <input type="checkbox" id="regexEnabled" class="w-4 h-4"> Use regex
+                        </label>
                     </div>
                 </div>
-                
-                <!-- Remove Lines parameters -->
+
+                <!-- Remove Lines -->
                 <div id="removeLinesParams" class="hidden">
-                    <div class="mb-4">
-                        <label for="lineMatchText" class="block mb-2 font-medium">Remove lines containing:</label>
-                        <input type="text" id="lineMatchText" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-base">
+                    <div class="mb-3">
+                        <label for="lineMatchText" class="block mb-1 text-sm font-medium">Remove lines containing:</label>
+                        <input type="text" id="lineMatchText" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-sm">
                     </div>
-                    <div class="flex items-center mb-4">
-                        <input type="checkbox" id="lineMatchCaseSensitive" class="w-4 h-4 text-primary">
-                        <label for="lineMatchCaseSensitive" class="ml-2">Case sensitive</label>
-                    </div>
-                    <div class="flex items-center mb-4">
-                        <input type="checkbox" id="lineMatchRegex" class="w-4 h-4 text-primary">
-                        <label for="lineMatchRegex" class="ml-2">Use regular expression</label>
+                    <div class="flex gap-4 flex-wrap">
+                        <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+                            <input type="checkbox" id="lineMatchCaseSensitive" class="w-4 h-4"> Case sensitive
+                        </label>
+                        <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+                            <input type="checkbox" id="lineMatchRegex" class="w-4 h-4"> Use regex
+                        </label>
                     </div>
                 </div>
 
-                <!-- Add Prefix/Suffix parameters -->
+                <!-- Prefix/Suffix -->
                 <div id="prefixSuffixParams" class="hidden">
-                    <div class="mb-4">
-                        <label for="prefixText" class="block mb-2 font-medium">Prefix (added to beginning of each line):</label>
-                        <input type="text" id="prefixText" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-base">
+                    <div class="mb-3">
+                        <label for="prefixText" class="block mb-1 text-sm font-medium">Prefix (start of each line):</label>
+                        <input type="text" id="prefixText" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-sm">
                     </div>
-                    <div class="mb-4">
-                        <label for="suffixText" class="block mb-2 font-medium">Suffix (added to end of each line):</label>
-                        <input type="text" id="suffixText" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-base">
+                    <div class="mb-3">
+                        <label for="suffixText" class="block mb-1 text-sm font-medium">Suffix (end of each line):</label>
+                        <input type="text" id="suffixText" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-sm">
                     </div>
-                    <div class="flex items-center mb-4">
-                        <input type="checkbox" id="skipEmptyLines" class="w-4 h-4 text-primary" checked>
-                        <label for="skipEmptyLines" class="ml-2">Skip empty lines</label>
-                    </div>
+                    <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+                        <input type="checkbox" id="skipEmptyLines" class="w-4 h-4" checked> Skip empty lines
+                    </label>
                 </div>
 
-                <!-- Line Sorting parameters -->
+                <!-- Sort -->
                 <div id="lineSortingParams" class="hidden">
-                    <div class="mb-4">
-                        <label for="sortDirection" class="block mb-2 font-medium">Sort order:</label>
-                        <select id="sortDirection" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-base">
+                    <div class="mb-3">
+                        <label for="sortDirection" class="block mb-1 text-sm font-medium">Sort order:</label>
+                        <select id="sortDirection" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-sm">
                             <option value="asc">Ascending (A-Z)</option>
                             <option value="desc">Descending (Z-A)</option>
                         </select>
                     </div>
-                    <div class="flex items-center mb-4">
-                        <input type="checkbox" id="sortCaseInsensitive" class="w-4 h-4 text-primary" checked>
-                        <label for="sortCaseInsensitive" class="ml-2">Case insensitive sorting</label>
-                    </div>
-                    <div class="flex items-center mb-4">
-                        <input type="checkbox" id="sortNumeric" class="w-4 h-4 text-primary">
-                        <label for="sortNumeric" class="ml-2">Numeric sorting (for lines starting with numbers)</label>
+                    <div class="flex gap-4 flex-wrap">
+                        <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+                            <input type="checkbox" id="sortCaseInsensitive" class="w-4 h-4" checked> Case insensitive
+                        </label>
+                        <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+                            <input type="checkbox" id="sortNumeric" class="w-4 h-4"> Numeric sort
+                        </label>
                     </div>
                 </div>
 
-                <!-- Convert Case parameters -->
+                <!-- Convert Case -->
                 <div id="convertCaseParams" class="hidden">
-                    <div class="mb-4">
-                        <label for="caseOperation" class="block mb-2 font-medium">Convert to:</label>
-                        <select id="caseOperation" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-base">
-                            <option value="lowercase">lowercase</option>
-                            <option value="uppercase">UPPERCASE</option>
-                            <option value="titlecase">Title Case</option>
-                            <option value="sentencecase">Sentence case</option>
-                        </select>
-                    </div>
+                    <label for="caseOperation" class="block mb-1 text-sm font-medium">Convert to:</label>
+                    <select id="caseOperation" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-sm">
+                        <option value="lowercase">lowercase</option>
+                        <option value="uppercase">UPPERCASE</option>
+                        <option value="titlecase">Title Case</option>
+                        <option value="sentencecase">Sentence case</option>
+                    </select>
                 </div>
-                
-                <!-- Convert Format parameters -->
+
+                <!-- Convert Format -->
                 <div id="convertFormatParams" class="hidden">
-                    <div class="mb-4">
-                        <label for="targetFormat" class="block mb-2 font-medium">Convert to:</label>
-                        <select id="targetFormat" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-base">
+                    <div class="mb-3">
+                        <label for="targetFormat" class="block mb-1 text-sm font-medium">Convert to:</label>
+                        <select id="targetFormat" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-sm">
                             <option value="txt">TXT (Plain Text)</option>
                             <option value="md">MD (Markdown)</option>
-                            <option value="csv">CSV (Comma Separated Values)</option>
+                            <option value="csv">CSV</option>
                             <option value="json">JSON</option>
                         </select>
                     </div>
-                    <div class="mb-4">
-                        <div class="flex items-center">
-                            <input type="checkbox" id="stripMarkdown" class="w-4 h-4 text-primary">
-                            <label for="stripMarkdown" class="ml-2">Strip markdown when converting to TXT</label>
-                        </div>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-6">
-                            When enabled, common markdown syntax like #, *, _, [], etc. will be removed or simplified
-                        </p>
-                    </div>
+                    <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+                        <input type="checkbox" id="stripMarkdown" class="w-4 h-4">
+                        Strip markdown syntax when converting to TXT
+                    </label>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-5">Removes #, *, _, [], etc.</p>
                 </div>
 
-                <!-- Batch Rename parameters -->
+                <!-- Batch Rename -->
                 <div id="batchRenameParams" class="hidden">
-                    <div class="mb-4">
-                        <label for="renamePattern" class="block mb-2 font-medium">Filename pattern:</label>
-                        <input type="text" id="renamePattern" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-base" 
-                               placeholder="file-[index]">
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            Use [index], [name], and [ext] as placeholders for file index, original name, and extension
-                        </p>
+                    <div class="mb-3">
+                        <label for="renamePattern" class="block mb-1 text-sm font-medium">Filename pattern:</label>
+                        <input type="text" id="renamePattern" placeholder="file-[index]"
+                               class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-sm">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Placeholders: [index], [name], [ext]</p>
                     </div>
-                    <div class="mb-4">
-                        <label for="startIndex" class="block mb-2 font-medium">Start index:</label>
-                        <input type="number" id="startIndex" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-base" value="1" min="0">
-                    </div>
-                    <div class="mb-4">
-                        <label for="indexPadding" class="block mb-2 font-medium">Index padding (zeros):</label>
-                        <input type="number" id="indexPadding" class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-base" value="1" min="1" max="10">
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            Example: padding of 3 gives 001, 002, etc.
-                        </p>
+                    <div class="flex gap-3">
+                        <div class="flex-1">
+                            <label for="startIndex" class="block mb-1 text-sm font-medium">Start index:</label>
+                            <input type="number" id="startIndex" value="1" min="0"
+                                   class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-sm">
+                        </div>
+                        <div class="flex-1">
+                            <label for="indexPadding" class="block mb-1 text-sm font-medium">Zero padding:</label>
+                            <input type="number" id="indexPadding" value="1" min="1" max="10"
+                                   class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-sm">
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">e.g. 3 → 001, 002</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <button id="applyChanges" class="mt-4 px-4 py-2 bg-primary hover:bg-opacity-90 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50">Apply Changes</button>
+
+            <button id="applyChanges" class="mt-4 px-4 py-2 bg-primary hover:bg-opacity-90 text-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 flex items-center gap-2">
+                Apply Changes
+            </button>
         </div>
-        
-        <!-- Results Section -->
-        <div id="resultsSection" class="mb-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm opacity-50 pointer-events-none hidden">
-            <h2 class="text-xl font-semibold mb-4">Step 3: Results</h2>
-            
-            <div class="flex flex-col sm:flex-row justify-between mb-4 gap-4">
+
+        <!-- Step 3: Results -->
+        <div id="resultsSection" class="mb-5 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm opacity-50 pointer-events-none hidden">
+            <h2 class="text-base font-semibold mb-3">Step 3: Results</h2>
+            <div class="flex flex-col sm:flex-row justify-between mb-3 gap-3">
                 <div class="flex flex-wrap gap-2">
-                    <button id="downloadAllBtn" class="px-4 py-2 bg-primary hover:bg-opacity-90 text-white rounded-md flex items-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    <button id="downloadAllBtn" class="px-3 py-1.5 bg-primary hover:bg-opacity-90 text-white rounded-md text-sm flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                         </svg>
                         Download All as ZIP
                     </button>
-                    <button id="copyAllBtn" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-opacity-90 rounded-md flex items-center focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    <button id="copyAllBtn" class="px-3 py-1.5 bg-gray-200 dark:bg-gray-700 hover:bg-opacity-90 rounded-md text-sm flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                         </svg>
-                        Copy All Content
+                        Copy All
                     </button>
                 </div>
                 <div class="relative">
-                    <input type="text" id="resultsSearch" class="w-full p-2 pl-8 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-base" placeholder="Search in results...">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-2 top-2.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    <input type="text" id="resultsSearch" placeholder="Search in results..."
+                           class="w-full p-2 pl-8 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute left-2 top-2.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                 </div>
             </div>
-            
-            <div class="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 rounded-md hidden" id="operationSummary">
-                <!-- Summary will be inserted here -->
-            </div>
-            
-            <div id="resultsContainer" class="space-y-6"></div>
+            <div id="operationSummary" class="mb-3 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 rounded-md text-sm hidden"></div>
+            <div id="resultsContainer" class="space-y-4"></div>
         </div>
     </div>
 
-    <!-- Toast notification container -->
     <div id="toast" class="toast" role="alert"></div>
-    
-    <!-- External libraries for ZIP creation -->
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/diff@5.1.0/dist/diff.min.js"></script>
-    
+
     <script>
-        // Dark mode detection
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.classList.add('dark');
-        }
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-            if (event.matches) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-        });
-        
-        // Variables to store files and contents
+        // Dark mode
+        const mq = window.matchMedia('(prefers-color-scheme: dark)');
+        if (mq.matches) document.documentElement.classList.add('dark');
+        mq.addEventListener('change', e => document.documentElement.classList.toggle('dark', e.matches));
+
         let filesData = [];
-        
-        // DOM elements
-        const fileInput = document.getElementById('fileInput');
-        const fileList = document.getElementById('fileList');
-        const operationsSection = document.getElementById('operationsSection');
-        const operationType = document.getElementById('operationType');
-        const findReplaceParams = document.getElementById('findReplaceParams');
-        const removeLinesParams = document.getElementById('removeLinesParams');
+
+        // DOM refs
+        const fileInput          = document.getElementById('fileInput');
+        const fileList           = document.getElementById('fileList');
+        const operationsSection  = document.getElementById('operationsSection');
+        const operationType      = document.getElementById('operationType');
+        const findReplaceParams  = document.getElementById('findReplaceParams');
+        const removeLinesParams  = document.getElementById('removeLinesParams');
         const prefixSuffixParams = document.getElementById('prefixSuffixParams');
-        const lineSortingParams = document.getElementById('lineSortingParams');
-        const convertCaseParams = document.getElementById('convertCaseParams');
-        const convertFormatParams = document.getElementById('convertFormatParams');
-        const batchRenameParams = document.getElementById('batchRenameParams');
-        const applyChanges = document.getElementById('applyChanges');
-        const resultsSection = document.getElementById('resultsSection');
-        const resultsContainer = document.getElementById('resultsContainer');
-        const downloadAllBtn = document.getElementById('downloadAllBtn');
-        const copyAllBtn = document.getElementById('copyAllBtn');
-        const resultsSearch = document.getElementById('resultsSearch');
-        const operationSummary = document.getElementById('operationSummary');
-        const uploadProgress = document.getElementById('uploadProgress');
-        const progressText = document.getElementById('progressText');
-        const progressPercent = document.getElementById('progressPercent');
-        const progressBarFill = document.getElementById('progressBarFill');
-        
-        // Toast notification
+        const lineSortingParams  = document.getElementById('lineSortingParams');
+        const convertCaseParams  = document.getElementById('convertCaseParams');
+        const convertFormatParams= document.getElementById('convertFormatParams');
+        const batchRenameParams  = document.getElementById('batchRenameParams');
+        const applyChanges       = document.getElementById('applyChanges');
+        const resultsSection     = document.getElementById('resultsSection');
+        const resultsContainer   = document.getElementById('resultsContainer');
+        const downloadAllBtn     = document.getElementById('downloadAllBtn');
+        const copyAllBtn         = document.getElementById('copyAllBtn');
+        const resultsSearch      = document.getElementById('resultsSearch');
+        const operationSummary   = document.getElementById('operationSummary');
+        const uploadProgress     = document.getElementById('uploadProgress');
+        const progressText       = document.getElementById('progressText');
+        const progressPercent    = document.getElementById('progressPercent');
+        const progressBarFill    = document.getElementById('progressBarFill');
+
+        // Toast
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             toast.className = 'toast';
-            
-            // Add type-specific styling
-            if (type === 'success') {
-                toast.classList.add('bg-green-50', 'dark:bg-green-900/20', 'text-green-800', 'dark:text-green-200', 'border-l-4', 'border-green-500');
-            } else if (type === 'error') {
-                toast.classList.add('bg-red-50', 'dark:bg-red-900/20', 'text-red-800', 'dark:text-red-200', 'border-l-4', 'border-red-500');
-            } else {
-                toast.classList.add('bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-800', 'dark:text-blue-200', 'border-l-4', 'border-blue-500');
-            }
-            
+            toast.classList.add(`toast-${type}`, 'show');
             toast.textContent = message;
-            toast.classList.add('show');
-            
-            // Auto-hide after 3 seconds
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
-        
-        // File input handler
+
+        // File input
         fileInput.addEventListener('change', async (e) => {
             filesData = [];
             fileList.innerHTML = '';
-            
             const files = e.target.files;
-            
-            if (files.length === 0) {
+            if (!files.length) {
                 operationsSection.classList.add('opacity-50', 'pointer-events-none');
                 resultsSection.classList.add('opacity-50', 'pointer-events-none', 'hidden');
                 return;
             }
-            
-            // Show progress bar
             uploadProgress.classList.remove('hidden');
             progressText.textContent = `Processing 0/${files.length} files...`;
             progressPercent.textContent = '0%';
             progressBarFill.style.width = '0%';
-            
-            // Process files
-            let formatCounts = {};
-            let errorCount = 0;
-            let totalSize = 0;
-            let processedCount = 0;
-            
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
+
+            let formatCounts = {}, errorCount = 0, totalSize = 0, processedCount = 0;
+
+            for (const file of files) {
                 const fileExt = file.name.split('.').pop().toLowerCase();
-                
                 try {
                     const content = await readFile(file);
-                    
                     filesData.push({
                         name: file.name,
                         originalContent: content,
                         modifiedContent: null,
                         originalFormat: fileExt,
-                        targetFormat: fileExt, // Default to same format
+                        targetFormat: fileExt,
                         size: file.size
                     });
-                    
-                    // Count file types
                     formatCounts[fileExt] = (formatCounts[fileExt] || 0) + 1;
                     totalSize += file.size;
-                    
-                } catch (error) {
-                    console.error(`Error reading ${file.name}:`, error);
+                } catch (err) {
+                    console.error(`Error reading ${file.name}:`, err);
                     errorCount++;
                 }
-                
-                // Update progress
                 processedCount++;
-                const progressPct = Math.round((processedCount / files.length) * 100);
+                const pct = Math.round((processedCount / files.length) * 100);
                 progressText.textContent = `Processing ${processedCount}/${files.length} files...`;
-                progressPercent.textContent = `${progressPct}%`;
-                progressBarFill.style.width = `${progressPct}%`;
+                progressPercent.textContent = `${pct}%`;
+                progressBarFill.style.width = `${pct}%`;
             }
-            
-            // Hide progress bar
-            setTimeout(() => {
-                uploadProgress.classList.add('hidden');
-            }, 500);
-            
-            // Create format summary
-            let formatSummary = Object.entries(formatCounts)
-                .map(([format, count]) => `${count} ${format.toUpperCase()}`)
-                .join(', ');
-            
-            // Show file count summary
+
+            setTimeout(() => uploadProgress.classList.add('hidden'), 500);
+
+            const formatSummary = Object.entries(formatCounts)
+                .map(([fmt, cnt]) => `${cnt} ${fmt.toUpperCase()}`).join(', ');
+
             const filesCountElem = document.createElement('div');
-            filesCountElem.className = 'p-4 border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800';
+            filesCountElem.className = 'p-3 border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-sm';
             filesCountElem.innerHTML = `
                 <div class="flex justify-between items-center">
                     <div>
-                        <div class="font-medium text-lg">${files.length} files imported</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
-                            ${formatSummary}${errorCount > 0 ? `, ${errorCount} errors` : ''}
-                            | Total size: ${formatFileSize(totalSize)}
+                        <div class="font-medium">${files.length} files imported</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                            ${formatSummary}${errorCount > 0 ? `, ${errorCount} errors` : ''} | Total: ${formatFileSize(totalSize)}
                         </div>
                     </div>
-                    <button id="clearFiles" class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm px-2 py-1">
-                        Clear Files
-                    </button>
-                </div>
-            `;
+                    <button id="clearFiles" class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-xs px-2 py-1">Clear</button>
+                </div>`;
             fileList.appendChild(filesCountElem);
-            
-            // Add clear button handler
+
             document.getElementById('clearFiles').addEventListener('click', () => {
                 fileInput.value = '';
                 filesData = [];
@@ -522,1206 +378,619 @@
                 operationsSection.classList.add('opacity-50', 'pointer-events-none');
                 resultsSection.classList.add('opacity-50', 'pointer-events-none', 'hidden');
             });
-            
-            // Enable operations section
+
             operationsSection.classList.remove('opacity-50', 'pointer-events-none');
-            
-            // Optimize for large files by initializing them as not expanded
-            if (totalSize > 5 * 1024 * 1024) { // If total size > 5MB
-                showToast('Large files detected. Preview might be limited for better performance.', 'info');
-            }
+            if (totalSize > 5 * 1024 * 1024) showToast('Large files detected. Preview may be limited.', 'info');
         });
-        
-        // Function to read file contents
+
         function readFile(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                
-                reader.onload = (e) => {
-                    resolve(e.target.result);
-                };
-                
-                reader.onerror = (e) => {
-                    reject(new Error(`Failed to read file: ${e.target.error.message || 'Unknown error'}`));
-                };
-                
+                reader.onload = e => resolve(e.target.result);
+                reader.onerror = e => reject(new Error(`Failed to read file: ${e.target.error?.message || 'Unknown error'}`));
                 reader.readAsText(file);
             });
         }
-        
-        // Format file size
+
         function formatFileSize(bytes) {
-            if (bytes < 1024) return bytes + ' bytes';
-            else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-            else return (bytes / 1048576).toFixed(1) + ' MB';
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / 1048576).toFixed(1) + ' MB';
         }
-        
-        // Operation type change handler
+
+        // Operation switcher
+        const paramPanels = {
+            'find-replace':    findReplaceParams,
+            'remove-lines':    removeLinesParams,
+            'add-prefix-suffix': prefixSuffixParams,
+            'line-sorting':    lineSortingParams,
+            'convert-case':    convertCaseParams,
+            'convert-format':  convertFormatParams,
+            'batch-rename':    batchRenameParams
+        };
+
         operationType.addEventListener('change', (e) => {
-            const operation = e.target.value;
-            
-            // Hide all parameter divs
-            findReplaceParams.classList.add('hidden');
-            removeLinesParams.classList.add('hidden');
-            prefixSuffixParams.classList.add('hidden');
-            lineSortingParams.classList.add('hidden');
-            convertCaseParams.classList.add('hidden');
-            convertFormatParams.classList.add('hidden');
-            batchRenameParams.classList.add('hidden');
-            
-            // Show relevant parameters
-            switch(operation) {
-                case 'find-replace':
-                    findReplaceParams.classList.remove('hidden');
-                    break;
-                case 'remove-lines':
-                    removeLinesParams.classList.remove('hidden');
-                    break;
-                case 'add-prefix-suffix':
-                    prefixSuffixParams.classList.remove('hidden');
-                    break;
-                case 'line-sorting':
-                    lineSortingParams.classList.remove('hidden');
-                    break;
-                case 'convert-case':
-                    convertCaseParams.classList.remove('hidden');
-                    break;
-                case 'convert-format':
-                    convertFormatParams.classList.remove('hidden');
-                    break;
-                case 'batch-rename':
-                    batchRenameParams.classList.remove('hidden');
-                    break;
-            }
+            Object.values(paramPanels).forEach(p => p.classList.add('hidden'));
+            if (paramPanels[e.target.value]) paramPanels[e.target.value].classList.remove('hidden');
         });
-        
-        // Apply changes button handler
+
+        // Apply changes
         applyChanges.addEventListener('click', async () => {
             const operation = operationType.value;
-            
-            // Show progress
             uploadProgress.classList.remove('hidden');
             progressText.textContent = 'Applying changes...';
             progressPercent.textContent = '0%';
             progressBarFill.style.width = '0%';
-            
-            // Disable apply button during processing
+
             applyChanges.disabled = true;
-            applyChanges.innerHTML = `
-                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Processing...
-            `;
-            
-            // Process files in smaller batches to avoid UI freezing
+            applyChanges.innerHTML = `<svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...`;
+
             await processFilesInBatches(operation);
-            
-            // Re-enable apply button
+
             applyChanges.disabled = false;
-            applyChanges.innerHTML = 'Apply Changes';
-            
-            // Hide progress bar
+            applyChanges.textContent = 'Apply Changes';
             uploadProgress.classList.add('hidden');
-            
-            // Show results
             showResults();
-            
-            // Show toast notification
             showToast('Changes applied successfully!', 'success');
         });
-        
-        // Process files in batches
+
         async function processFilesInBatches(operation, batchSize = 5) {
             const totalFiles = filesData.length;
-            let processedFiles = 0;
-            
-            // Statistics
-            let totalChanges = 0;
-            let totalLinesChanged = 0;
-            let totalLinesRemoved = 0;
-            let totalLinesAdded = 0;
-            
+            let processedFiles = 0, totalChanges = 0, totalLinesRemoved = 0, totalLinesAdded = 0;
+
             for (let i = 0; i < totalFiles; i += batchSize) {
                 const batch = filesData.slice(i, i + batchSize);
-                
-                await new Promise(resolve => {
-                    setTimeout(async () => {
-                        for (const fileData of batch) {
-                            const result = await processFile(fileData, operation);
-                            
-                            // Update statistics
-                            if (result) {
-                                totalChanges += result.changes || 0;
-                                totalLinesChanged += result.linesChanged || 0;
-                                totalLinesRemoved += result.linesRemoved || 0;
-                                totalLinesAdded += result.linesAdded || 0;
-                            }
-                            
-                            processedFiles++;
-                            const progress = Math.round((processedFiles / totalFiles) * 100);
-                            progressText.textContent = `Processing file ${processedFiles}/${totalFiles}...`;
-                            progressPercent.textContent = `${progress}%`;
-                            progressBarFill.style.width = `${progress}%`;
+                await new Promise(resolve => setTimeout(async () => {
+                    for (const fileData of batch) {
+                        const result = await processFile(fileData, operation);
+                        if (result) {
+                            totalChanges      += result.changes      || 0;
+                            totalLinesRemoved += result.linesRemoved || 0;
+                            totalLinesAdded   += result.linesAdded   || 0;
                         }
-                        resolve();
-                    }, 0); // Minimal timeout to allow UI updates
-                });
+                        processedFiles++;
+                        const pct = Math.round((processedFiles / totalFiles) * 100);
+                        progressText.textContent = `Processing file ${processedFiles}/${totalFiles}...`;
+                        progressPercent.textContent = `${pct}%`;
+                        progressBarFill.style.width = `${pct}%`;
+                    }
+                    resolve();
+                }, 0));
             }
-            
-            // Update operation summary
-            updateOperationSummary({
-                operation,
-                totalFiles,
-                totalChanges,
-                totalLinesChanged,
-                totalLinesRemoved,
-                totalLinesAdded
-            });
-            
-            return {
-                totalChanges,
-                totalLinesChanged,
-                totalLinesRemoved,
-                totalLinesAdded
-            };
+
+            updateOperationSummary({ operation, totalFiles, totalChanges, totalLinesRemoved, totalLinesAdded });
         }
-        
-        // Process a single file
+
         async function processFile(fileData, operation) {
-            const stats = {
-                changes: 0,
-                linesChanged: 0,
-                linesRemoved: 0,
-                linesAdded: 0
-            };
-            
-            // Get original line count for comparison
+            const stats = { changes: 0, linesRemoved: 0, linesAdded: 0 };
             const originalLineCount = fileData.originalContent.split('\n').length;
-            
+
             try {
-                switch(operation) {
+                switch (operation) {
                     case 'find-replace': {
-                        const findText = document.getElementById('findText').value;
+                        const findText    = document.getElementById('findText').value;
                         const replaceText = document.getElementById('replaceText').value;
-                        const caseSensitive = document.getElementById('caseSensitive').checked;
-                        const regexEnabled = document.getElementById('regexEnabled').checked;
-                        
-                        // Count matches before replacing
-                        stats.changes = countMatches(
-                            fileData.originalContent,
-                            findText,
-                            caseSensitive,
-                            regexEnabled
-                        );
-                        
-                        fileData.modifiedContent = findAndReplace(
-                            fileData.originalContent, 
-                            findText, 
-                            replaceText, 
-                            caseSensitive, 
-                            regexEnabled
-                        );
+                        const caseSens    = document.getElementById('caseSensitive').checked;
+                        const useRegex    = document.getElementById('regexEnabled').checked;
+                        stats.changes = countMatches(fileData.originalContent, findText, caseSens, useRegex);
+                        fileData.modifiedContent = findAndReplace(fileData.originalContent, findText, replaceText, caseSens, useRegex);
                         fileData.targetFormat = fileData.originalFormat;
                         break;
                     }
-                    
                     case 'remove-lines': {
-                        const lineMatchText = document.getElementById('lineMatchText').value;
-                        const lineMatchCaseSensitive = document.getElementById('lineMatchCaseSensitive').checked;
-                        const lineMatchRegex = document.getElementById('lineMatchRegex').checked;
-                        
-                        // Count matches before removing
-                        stats.changes = countLinesMatching(
-                            fileData.originalContent,
-                            lineMatchText,
-                            lineMatchCaseSensitive,
-                            lineMatchRegex
-                        );
-                        
-                        fileData.modifiedContent = removeLines(
-                            fileData.originalContent, 
-                            lineMatchText, 
-                            lineMatchCaseSensitive,
-                            lineMatchRegex
-                        );
+                        const matchText = document.getElementById('lineMatchText').value;
+                        const caseSens  = document.getElementById('lineMatchCaseSensitive').checked;
+                        const useRegex  = document.getElementById('lineMatchRegex').checked;
+                        stats.changes = countLinesMatching(fileData.originalContent, matchText, caseSens, useRegex);
+                        fileData.modifiedContent = removeLines(fileData.originalContent, matchText, caseSens, useRegex);
                         fileData.targetFormat = fileData.originalFormat;
                         break;
                     }
-                    
-                    case 'remove-empty': {
-                        // Count empty lines
+                    case 'remove-empty':
                         stats.changes = countEmptyLines(fileData.originalContent);
-                        
                         fileData.modifiedContent = removeEmptyLines(fileData.originalContent);
                         fileData.targetFormat = fileData.originalFormat;
                         break;
-                    }
-                    
-                    case 'trim-lines': {
-                        // Count lines with whitespace
+                    case 'trim-lines':
                         stats.changes = countLinesWithExcessWhitespace(fileData.originalContent);
-                        
                         fileData.modifiedContent = trimLines(fileData.originalContent);
                         fileData.targetFormat = fileData.originalFormat;
                         break;
-                    }
-                    
                     case 'add-prefix-suffix': {
-                        const prefixText = document.getElementById('prefixText').value;
-                        const suffixText = document.getElementById('suffixText').value;
-                        const skipEmptyLines = document.getElementById('skipEmptyLines').checked;
-                        
-                        // Adding prefix/suffix changes each non-empty line
-                        const lines = fileData.originalContent.split('\n');
-                        stats.changes = skipEmptyLines ? 
-                            lines.filter(line => line.trim() !== '').length : 
-                            lines.length;
-                        
-                        fileData.modifiedContent = addPrefixSuffix(
-                            fileData.originalContent,
-                            prefixText,
-                            suffixText,
-                            skipEmptyLines
-                        );
+                        const prefix    = document.getElementById('prefixText').value;
+                        const suffix    = document.getElementById('suffixText').value;
+                        const skipEmpty = document.getElementById('skipEmptyLines').checked;
+                        const lines     = fileData.originalContent.split('\n');
+                        stats.changes   = skipEmpty ? lines.filter(l => l.trim() !== '').length : lines.length;
+                        fileData.modifiedContent = addPrefixSuffix(fileData.originalContent, prefix, suffix, skipEmpty);
                         fileData.targetFormat = fileData.originalFormat;
                         break;
                     }
-                    
                     case 'line-sorting': {
-                        const sortDirection = document.getElementById('sortDirection').value;
-                        const sortCaseInsensitive = document.getElementById('sortCaseInsensitive').checked;
-                        const sortNumeric = document.getElementById('sortNumeric').checked;
-                        
-                        // Sorting changes the order but not the count, so mark all lines as changed
-                        stats.changes = fileData.originalContent.split('\n').length;
-                        
-                        fileData.modifiedContent = sortLines(
-                            fileData.originalContent,
-                            sortDirection,
-                            sortCaseInsensitive,
-                            sortNumeric
-                        );
+                        const dir         = document.getElementById('sortDirection').value;
+                        const caseInsens  = document.getElementById('sortCaseInsensitive').checked;
+                        const numeric     = document.getElementById('sortNumeric').checked;
+                        stats.changes     = fileData.originalContent.split('\n').length;
+                        fileData.modifiedContent = sortLines(fileData.originalContent, dir, caseInsens, numeric);
                         fileData.targetFormat = fileData.originalFormat;
                         break;
                     }
-                    
                     case 'convert-case': {
-                        const caseOperation = document.getElementById('caseOperation').value;
-                        
-                        // Case conversion affects all characters
+                        const op = document.getElementById('caseOperation').value;
                         stats.changes = fileData.originalContent.length;
-                        
-                        fileData.modifiedContent = convertCase(
-                            fileData.originalContent,
-                            caseOperation
-                        );
+                        fileData.modifiedContent = convertCase(fileData.originalContent, op);
                         fileData.targetFormat = fileData.originalFormat;
                         break;
                     }
-                    
                     case 'convert-format': {
-                        const targetFormat = document.getElementById('targetFormat').value;
-                        const stripMarkdown = document.getElementById('stripMarkdown').checked;
-                        
-                        // Format conversion changes the whole file
+                        const fmt   = document.getElementById('targetFormat').value;
+                        const strip = document.getElementById('stripMarkdown').checked;
                         stats.changes = 1;
-                        
-                        fileData.modifiedContent = convertFormat(
-                            fileData.originalContent,
-                            fileData.originalFormat,
-                            targetFormat,
-                            stripMarkdown
-                        );
-                        fileData.targetFormat = targetFormat;
+                        fileData.modifiedContent = convertFormat(fileData.originalContent, fileData.originalFormat, fmt, strip);
+                        fileData.targetFormat = fmt;
                         break;
                     }
-                    
-                    case 'batch-rename': {
-                        // This only changes filenames, not content
+                    case 'batch-rename':
                         fileData.modifiedContent = fileData.originalContent;
                         fileData.targetFormat = fileData.originalFormat;
-                        stats.changes = 1; // Count filename change
+                        stats.changes = 1;
                         break;
-                    }
                 }
-                
-                // Calculate line statistics
+
                 const modifiedLineCount = fileData.modifiedContent.split('\n').length;
-                stats.linesChanged = Math.abs(modifiedLineCount - originalLineCount);
-                
-                if (modifiedLineCount > originalLineCount) {
-                    stats.linesAdded = modifiedLineCount - originalLineCount;
-                } else if (modifiedLineCount < originalLineCount) {
-                    stats.linesRemoved = originalLineCount - modifiedLineCount;
-                }
-                
+                const diff = modifiedLineCount - originalLineCount;
+                if (diff > 0) stats.linesAdded   =  diff;
+                if (diff < 0) stats.linesRemoved  = -diff;
                 return stats;
-            
-            } catch (error) {
-                console.error(`Error processing file ${fileData.name}:`, error);
+
+            } catch (err) {
+                console.error(`Error processing ${fileData.name}:`, err);
                 fileData.modifiedContent = fileData.originalContent;
-                fileData.targetFormat = fileData.originalFormat;
-                fileData.error = error.message;
+                fileData.targetFormat    = fileData.originalFormat;
+                fileData.error           = err.message;
                 return null;
             }
         }
-        
-        // Count matches for find-replace
+
+        // --- Count helpers ---
         function countMatches(text, findStr, caseSensitive, useRegex) {
             if (!findStr) return 0;
-            
             if (useRegex) {
                 try {
-                    const flags = caseSensitive ? 'g' : 'gi';
-                    const regex = new RegExp(findStr, flags);
-                    const matches = text.match(regex);
-                    return matches ? matches.length : 0;
-                } catch (error) {
-                    console.error("Invalid regex:", error);
-                    return 0;
-                }
-            } else {
-                if (caseSensitive) {
-                    let count = 0;
-                    let pos = text.indexOf(findStr);
-                    while (pos !== -1) {
-                        count++;
-                        pos = text.indexOf(findStr, pos + 1);
-                    }
-                    return count;
-                } else {
-                    const lowerText = text.toLowerCase();
-                    const lowerFindStr = findStr.toLowerCase();
-                    let count = 0;
-                    let pos = lowerText.indexOf(lowerFindStr);
-                    while (pos !== -1) {
-                        count++;
-                        pos = lowerText.indexOf(lowerFindStr, pos + 1);
-                    }
-                    return count;
-                }
+                    const m = text.match(new RegExp(findStr, caseSensitive ? 'g' : 'gi'));
+                    return m ? m.length : 0;
+                } catch { return 0; }
             }
+            const haystack = caseSensitive ? text : text.toLowerCase();
+            const needle   = caseSensitive ? findStr : findStr.toLowerCase();
+            let count = 0, pos = haystack.indexOf(needle);
+            while (pos !== -1) { count++; pos = haystack.indexOf(needle, pos + 1); }
+            return count;
         }
-        
-        // Count lines matching a pattern
+
         function countLinesMatching(text, matchStr, caseSensitive, useRegex) {
             if (!matchStr) return 0;
-            
             const lines = text.split('\n');
-            
             if (useRegex) {
                 try {
-                    const flags = caseSensitive ? '' : 'i';
-                    const regex = new RegExp(matchStr, flags);
-                    return lines.filter(line => regex.test(line)).length;
-                } catch (error) {
-                    console.error("Invalid regex:", error);
-                    return 0;
-                }
-            } else {
-                if (caseSensitive) {
-                    return lines.filter(line => line.includes(matchStr)).length;
-                } else {
-                    const lowerMatchStr = matchStr.toLowerCase();
-                    return lines.filter(line => line.toLowerCase().includes(lowerMatchStr)).length;
-                }
+                    const re = new RegExp(matchStr, caseSensitive ? '' : 'i');
+                    return lines.filter(l => re.test(l)).length;
+                } catch { return 0; }
             }
+            return caseSensitive
+                ? lines.filter(l => l.includes(matchStr)).length
+                : lines.filter(l => l.toLowerCase().includes(matchStr.toLowerCase())).length;
         }
-        
-        // Count empty lines
+
         function countEmptyLines(text) {
-            const lines = text.split('\n');
-            return lines.filter(line => line.trim() === '').length;
+            return text.split('\n').filter(l => l.trim() === '').length;
         }
-        
-        // Count lines with excess whitespace
+
         function countLinesWithExcessWhitespace(text) {
-            const lines = text.split('\n');
-            return lines.filter(line => line !== line.trim()).length;
+            return text.split('\n').filter(l => l !== l.trim()).length;
         }
-        
-        // Update operation summary
-        function updateOperationSummary(stats) {
-            let operationName;
-            switch (stats.operation) {
-                case 'find-replace': 
-                    operationName = 'Find and Replace';
-                    break;
-                case 'remove-lines': 
-                    operationName = 'Remove Lines';
-                    break;
-                case 'remove-empty': 
-                    operationName = 'Remove Empty Lines';
-                    break;
-                case 'trim-lines': 
-                    operationName = 'Trim Whitespace';
-                    break;
-                case 'add-prefix-suffix': 
-                    operationName = 'Add Prefix/Suffix';
-                    break;
-                case 'line-sorting': 
-                    operationName = 'Sort Lines';
-                    break;
-                case 'convert-case': 
-                    operationName = 'Convert Case';
-                    break;
-                case 'convert-format': 
-                    operationName = 'Convert Format';
-                    break;
-                case 'batch-rename': 
-                    operationName = 'Batch Rename';
-                    break;
-                default:
-                    operationName = 'Operation';
-            }
-            
+
+        // --- Operation summary ---
+        const opNames = {
+            'find-replace':    'Find and Replace',
+            'remove-lines':    'Remove Lines',
+            'remove-empty':    'Remove Empty Lines',
+            'trim-lines':      'Trim Whitespace',
+            'add-prefix-suffix':'Add Prefix/Suffix',
+            'line-sorting':    'Sort Lines',
+            'convert-case':    'Convert Case',
+            'convert-format':  'Convert Format',
+            'batch-rename':    'Batch Rename'
+        };
+
+        function updateOperationSummary({ operation, totalFiles, totalChanges, totalLinesRemoved, totalLinesAdded }) {
+            const name = opNames[operation] || 'Operation';
             operationSummary.innerHTML = `
-                <div class="flex items-start">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <div class="flex items-start gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                     <div>
-                        <div class="font-medium">${operationName} completed on ${stats.totalFiles} files</div>
-                        <div class="text-sm mt-1">
-                            ${stats.totalChanges > 0 ? `Made ${stats.totalChanges} changes across all files. ` : ''}
-                            ${stats.totalLinesRemoved > 0 ? `Removed ${stats.totalLinesRemoved} lines. ` : ''}
-                            ${stats.totalLinesAdded > 0 ? `Added ${stats.totalLinesAdded} lines. ` : ''}
+                        <div class="font-medium">${name} completed on ${totalFiles} file${totalFiles !== 1 ? 's' : ''}</div>
+                        <div class="text-xs mt-0.5">
+                            ${totalChanges   > 0 ? `${totalChanges} changes. ` : ''}
+                            ${totalLinesRemoved > 0 ? `${totalLinesRemoved} lines removed. ` : ''}
+                            ${totalLinesAdded   > 0 ? `${totalLinesAdded} lines added. ` : ''}
                         </div>
                     </div>
-                </div>
-            `;
-            
+                </div>`;
             operationSummary.classList.remove('hidden');
         }
-        
-        // Find and replace function
+
+        // --- Core operations ---
         function findAndReplace(text, findStr, replaceStr, caseSensitive, useRegex) {
             if (!findStr) return text;
-            
             if (useRegex) {
                 try {
-                    const flags = caseSensitive ? 'g' : 'gi';
-                    const regex = new RegExp(findStr, flags);
-                    return text.replace(regex, replaceStr);
-                } catch (error) {
-                    // If regex is invalid, fall back to string replace
-                    console.error("Invalid regex:", error);
-                    throw new Error(`Invalid regular expression: ${error.message}`);
-                }
-            } else {
-                if (caseSensitive) {
-                    return text.split(findStr).join(replaceStr);
-                } else {
-                    const regex = new RegExp(escapeRegExp(findStr), 'gi');
-                    return text.replace(regex, replaceStr);
+                    return text.replace(new RegExp(findStr, caseSensitive ? 'g' : 'gi'), replaceStr);
+                } catch (e) {
+                    throw new Error(`Invalid regular expression: ${e.message}`);
                 }
             }
+            if (caseSensitive) return text.split(findStr).join(replaceStr);
+            return text.replace(new RegExp(escapeRegExp(findStr), 'gi'), replaceStr);
         }
-        
-        // Convert format function
-        function convertFormat(text, fromFormat, toFormat, stripMarkdown) {
-            // If format is the same, return unchanged
-            if (fromFormat === toFormat) return text;
-            
-            // Convert markdown to plain text
-            if (fromFormat === 'md' && toFormat === 'txt' && stripMarkdown) {
-                return stripMarkdownSyntax(text);
-            }
-            
-            // Convert text to markdown
-            if (fromFormat === 'txt' && toFormat === 'md') {
-                // Simple conversion: preserve line breaks and wrap paragraphs
-                return text;
-            }
-            
-            // Convert CSV to JSON
-            if (fromFormat === 'csv' && toFormat === 'json') {
-                try {
-                    const lines = text.split('\n').filter(line => line.trim() !== '');
-                    if (lines.length === 0) return '[]';
-                    
-                    const headers = lines[0].split(',').map(header => header.trim());
-                    const jsonArray = [];
-                    
-                    for (let i = 1; i < lines.length; i++) {
-                        const values = parseCSVLine(lines[i]);
-                        const obj = {};
-                        
-                        headers.forEach((header, index) => {
-                            obj[header] = index < values.length ? values[index] : '';
-                        });
-                        
-                        jsonArray.push(obj);
-                    }
-                    
-                    return JSON.stringify(jsonArray, null, 2);
-                } catch (error) {
-                    throw new Error(`Failed to convert CSV to JSON: ${error.message}`);
-                }
-            }
-            
-            // Convert JSON to CSV
-            if (fromFormat === 'json' && toFormat === 'csv') {
-                try {
-                    let jsonData = JSON.parse(text);
-                    
-                    // Handle array of objects
-                    if (Array.isArray(jsonData) && jsonData.length > 0 && typeof jsonData[0] === 'object') {
-                        // Get all unique keys
-                        const keys = new Set();
-                        jsonData.forEach(item => {
-                            Object.keys(item).forEach(key => keys.add(key));
-                        });
-                        
-                        const headers = Array.from(keys);
-                        let csv = headers.join(',') + '\n';
-                        
-                        jsonData.forEach(item => {
-                            const values = headers.map(key => {
-                                const value = item[key] !== undefined ? item[key] : '';
-                                // Escape commas and quotes in values
-                                return typeof value === 'string' && (value.includes(',') || value.includes('"')) 
-                                    ? `"${value.replace(/"/g, '""')}"` 
-                                    : value;
-                            });
-                            csv += values.join(',') + '\n';
-                        });
-                        
-                        return csv;
-                    }
-                    
-                    // For other JSON structures, just return the stringified version
-                    return JSON.stringify(jsonData, null, 2);
-                } catch (error) {
-                    throw new Error(`Failed to convert JSON to CSV: ${error.message}`);
-                }
-            }
-            
-            // For other format conversions, just keep the content the same
-            return text;
-        }
-        
-        // Parse a CSV line accounting for quoted values
-        function parseCSVLine(line) {
-            const values = [];
-            let current = '';
-            let inQuotes = false;
-            
-            for (let i = 0; i < line.length; i++) {
-                const char = line[i];
-                
-                if (char === '"') {
-                    if (inQuotes && i + 1 < line.length && line[i + 1] === '"') {
-                        // Double quotes inside quotes are escaped quotes
-                        current += '"';
-                        i++; // Skip the next quote
-                    } else {
-                        // Toggle quote state
-                        inQuotes = !inQuotes;
-                    }
-                } else if (char === ',' && !inQuotes) {
-                    // End of value
-                    values.push(current);
-                    current = '';
-                } else {
-                    current += char;
-                }
-            }
-            
-            // Add the last value
-            values.push(current);
-            
-            return values;
-        }
-        
-        // Strip markdown syntax
-        function stripMarkdownSyntax(markdown) {
-            let text = markdown;
-            
-            // Headers
-            text = text.replace(/^#{1,6}\s+/gm, '');
-            
-            // Bold and italic
-            text = text.replace(/[*_]{1,3}([^*_]+)[*_]{1,3}/g, '$1');
-            
-            // Links
-            text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
-            
-            // Images
-            text = text.replace(/!\[([^\]]+)\]\([^)]+\)/g, 'Image: $1');
-            
-            // Lists
-            text = text.replace(/^[\s-]*[-*+]\s+/gm, '• ');
-            text = text.replace(/^[\s-]*\d+\.\s+/gm, '• ');
-            
-            // Blockquotes
-            text = text.replace(/^>\s+/gm, '');
-            
-            // Code blocks
-            text = text.replace(/```[\s\S]*?```/g, function(match) {
-                return match.replace(/```(?:\w+)?\n([\s\S]*?)\n```/g, '$1');
-            });
-            
-            // Inline code
-            text = text.replace(/`([^`]+)`/g, '$1');
-            
-            // Horizontal rules
-            text = text.replace(/^(?:[-*_]\s*){3,}$/gm, '---');
-            
-            // HTML tags (basic)
-            text = text.replace(/<[^>]+>/g, '');
-            
-            return text;
-        }
-        
-        // Add prefix/suffix to lines
-        function addPrefixSuffix(text, prefix = '', suffix = '', skipEmptyLines = true) {
-            if (!prefix && !suffix) return text;
-            
-            const lines = text.split('\n');
-            const modifiedLines = lines.map(line => {
-                if (skipEmptyLines && line.trim() === '') {
-                    return line;
-                }
-                return prefix + line + suffix;
-            });
-            
-            return modifiedLines.join('\n');
-        }
-        
-        // Sort lines
-        function sortLines(text, direction = 'asc', caseInsensitive = true, numeric = false) {
-            const lines = text.split('\n');
-            
-            let sortedLines = [...lines].sort((a, b) => {
-                if (numeric) {
-                    // Extract numbers from start of lines
-                    const numA = parseFloat(a.match(/^\s*(-?\d+(\.\d+)?)/)?.[1] || '0');
-                    const numB = parseFloat(b.match(/^\s*(-?\d+(\.\d+)?)/)?.[1] || '0');
-                    
-                    if (!isNaN(numA) && !isNaN(numB)) {
-                        return numA - numB;
-                    }
-                }
-                
-                if (caseInsensitive) {
-                    return a.toLowerCase().localeCompare(b.toLowerCase());
-                } else {
-                    return a.localeCompare(b);
-                }
-            });
-            
-            if (direction === 'desc') {
-                sortedLines.reverse();
-            }
-            
-            return sortedLines.join('\n');
-        }
-        
-        // Convert case
-        function convertCase(text, caseOperation) {
-            switch(caseOperation) {
-                case 'lowercase':
-                    return text.toLowerCase();
-                case 'uppercase':
-                    return text.toUpperCase();
-                case 'titlecase':
-                    return text.replace(/\b\w+/g, function(word) {
-                        return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
-                    });
-                case 'sentencecase':
-                    return text.replace(/(^\s*|[.!?]\s+)([a-z])/g, function(match, p1, p2) {
-                        return p1 + p2.toUpperCase();
-                    });
-                default:
-                    return text;
-            }
-        }
-        
-        // Escape string for use in regex
-        function escapeRegExp(string) {
-            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        }
-        
-        // Remove lines containing text
+
         function removeLines(text, matchStr, caseSensitive, useRegex) {
             if (!matchStr) return text;
-            
             const lines = text.split('\n');
-            let resultLines;
-            
             if (useRegex) {
                 try {
-                    const flags = caseSensitive ? '' : 'i';
-                    const regex = new RegExp(matchStr, flags);
-                    resultLines = lines.filter(line => !regex.test(line));
-                } catch (error) {
-                    console.error("Invalid regex:", error);
-                    throw new Error(`Invalid regular expression: ${error.message}`);
-                }
-            } else {
-                if (caseSensitive) {
-                    resultLines = lines.filter(line => !line.includes(matchStr));
-                } else {
-                    const lowerMatchStr = matchStr.toLowerCase();
-                    resultLines = lines.filter(line => !line.toLowerCase().includes(lowerMatchStr));
+                    const re = new RegExp(matchStr, caseSensitive ? '' : 'i');
+                    return lines.filter(l => !re.test(l)).join('\n');
+                } catch (e) {
+                    throw new Error(`Invalid regular expression: ${e.message}`);
                 }
             }
-            
-            return resultLines.join('\n');
+            return caseSensitive
+                ? lines.filter(l => !l.includes(matchStr)).join('\n')
+                : lines.filter(l => !l.toLowerCase().includes(matchStr.toLowerCase())).join('\n');
         }
-        
-        // Remove empty lines
+
         function removeEmptyLines(text) {
-            const lines = text.split('\n');
-            const resultLines = lines.filter(line => line.trim() !== '');
-            return resultLines.join('\n');
+            return text.split('\n').filter(l => l.trim() !== '').join('\n');
         }
-        
-        // Trim whitespace from each line
+
         function trimLines(text) {
-            const lines = text.split('\n');
-            const resultLines = lines.map(line => line.trim());
-            return resultLines.join('\n');
+            return text.split('\n').map(l => l.trim()).join('\n');
         }
-        
-        // Generate a new filename based on the operation and target format
+
+        function addPrefixSuffix(text, prefix = '', suffix = '', skipEmpty = true) {
+            if (!prefix && !suffix) return text;
+            return text.split('\n').map(l => (skipEmpty && l.trim() === '') ? l : prefix + l + suffix).join('\n');
+        }
+
+        function sortLines(text, direction = 'asc', caseInsensitive = true, numeric = false) {
+            const lines = text.split('\n');
+            const sorted = [...lines].sort((a, b) => {
+                if (numeric) {
+                    const nA = parseFloat(a.match(/^\s*(-?\d+(\.\d+)?)/)?.[1] || 'NaN');
+                    const nB = parseFloat(b.match(/^\s*(-?\d+(\.\d+)?)/)?.[1] || 'NaN');
+                    if (!isNaN(nA) && !isNaN(nB)) return nA - nB;
+                }
+                return caseInsensitive ? a.toLowerCase().localeCompare(b.toLowerCase()) : a.localeCompare(b);
+            });
+            if (direction === 'desc') sorted.reverse();
+            return sorted.join('\n');
+        }
+
+        function convertCase(text, op) {
+            switch (op) {
+                case 'lowercase': return text.toLowerCase();
+                case 'uppercase': return text.toUpperCase();
+                case 'titlecase': return text.replace(/\b\w+/g, w => w.charAt(0).toUpperCase() + w.substring(1).toLowerCase());
+                case 'sentencecase': return text.replace(/(^\s*|[.!?]\s+)([a-z])/g, (_, p1, p2) => p1 + p2.toUpperCase());
+                default: return text;
+            }
+        }
+
+        function convertFormat(text, fromFormat, toFormat, strip) {
+            if (fromFormat === toFormat) return text;
+            if (fromFormat === 'md' && toFormat === 'txt' && strip) return stripMarkdownSyntax(text);
+            if (fromFormat === 'csv' && toFormat === 'json') {
+                try {
+                    const lines = text.split('\n').filter(l => l.trim() !== '');
+                    if (!lines.length) return '[]';
+                    const headers = lines[0].split(',').map(h => h.trim());
+                    return JSON.stringify(
+                        lines.slice(1).map(line => {
+                            const values = parseCSVLine(line);
+                            return Object.fromEntries(headers.map((h, i) => [h, i < values.length ? values[i] : '']));
+                        }),
+                        null, 2
+                    );
+                } catch (e) { throw new Error(`Failed to convert CSV to JSON: ${e.message}`); }
+            }
+            if (fromFormat === 'json' && toFormat === 'csv') {
+                try {
+                    const data = JSON.parse(text);
+                    if (Array.isArray(data) && data.length && typeof data[0] === 'object') {
+                        const keys = [...new Set(data.flatMap(Object.keys))];
+                        const escape = v => (typeof v === 'string' && (v.includes(',') || v.includes('"')))
+                            ? `"${v.replace(/"/g, '""')}"` : v;
+                        return [keys.join(','), ...data.map(row => keys.map(k => escape(row[k] ?? '')).join(','))].join('\n');
+                    }
+                    return JSON.stringify(data, null, 2);
+                } catch (e) { throw new Error(`Failed to convert JSON to CSV: ${e.message}`); }
+            }
+            return text;
+        }
+
+        function parseCSVLine(line) {
+            const values = [];
+            let cur = '', inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const c = line[i];
+                if (c === '"') {
+                    if (inQuotes && line[i + 1] === '"') { cur += '"'; i++; }
+                    else inQuotes = !inQuotes;
+                } else if (c === ',' && !inQuotes) { values.push(cur); cur = ''; }
+                else cur += c;
+            }
+            values.push(cur);
+            return values;
+        }
+
+        function stripMarkdownSyntax(text) {
+            return text
+                .replace(/^#{1,6}\s+/gm, '')
+                .replace(/!\[([^\]]+)\]\([^)]+\)/g, 'Image: $1')
+                .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+                .replace(/[*_]{1,3}([^*_\n]+)[*_]{1,3}/g, '$1')
+                .replace(/^[\s]*[-*+]\s+/gm, '• ')
+                .replace(/^\s*\d+\.\s+/gm, '• ')
+                .replace(/^>\s*/gm, '')
+                .replace(/```[\s\S]*?```/g, m => m.replace(/^```\w*\n?/, '').replace(/\n?```$/, ''))
+                .replace(/`([^`]+)`/g, '$1')
+                .replace(/^(?:[-*_]\s*){3,}$/gm, '---')
+                .replace(/<[^>]+>/g, '');
+        }
+
+        function escapeRegExp(s) {
+            return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function escapeHTML(text) {
+            const d = document.createElement('div');
+            d.textContent = text;
+            return d.innerHTML;
+        }
+
+        // --- Filename generation ---
         function generateOutputFilename(originalName, targetFormat, index) {
+            const dotIdx  = originalName.lastIndexOf('.');
+            const baseName = dotIdx !== -1 ? originalName.substring(0, dotIdx) : originalName;
+            const origExt  = dotIdx !== -1 ? originalName.substring(dotIdx + 1) : '';
+
             if (operationType.value === 'batch-rename') {
-                // Get rename pattern and parameters
-                const renamePattern = document.getElementById('renamePattern').value || 'file-[index]';
-                const startIndex = parseInt(document.getElementById('startIndex').value) || 1;
-                const indexPadding = parseInt(document.getElementById('indexPadding').value) || 1;
-                
-                // Extract name parts
-                const nameParts = originalName.split('.');
-                const ext = nameParts.pop();
-                const baseName = nameParts.join('.');
-                
-                // Format the index with padding
-                const formattedIndex = (startIndex + index).toString().padStart(indexPadding, '0');
-                
-                // Replace placeholders in the pattern
-                let newName = renamePattern
-                    .replace(/\[index\]/g, formattedIndex)
+                const pattern   = document.getElementById('renamePattern').value || 'file-[index]';
+                const startIdx  = parseInt(document.getElementById('startIndex').value) || 1;
+                const padding   = parseInt(document.getElementById('indexPadding').value) || 1;
+                const padded    = (startIdx + index).toString().padStart(padding, '0');
+                let newName = pattern
+                    .replace(/\[index\]/g, padded)
                     .replace(/\[name\]/g, baseName)
                     .replace(/\[ext\]/g, targetFormat);
-                
-                // Ensure the extension is correct
-                if (!newName.endsWith('.' + targetFormat)) {
-                    newName += '.' + targetFormat;
-                }
-                
+                if (!newName.endsWith('.' + targetFormat)) newName += '.' + targetFormat;
                 return newName;
-            } else {
-                // Standard filename generation
-                const nameParts = originalName.split('.');
-                const ext = nameParts.pop();
-                const baseName = nameParts.join('.');
-                
-                // If format changes, replace extension, otherwise append "-edited"
-                if (ext.toLowerCase() !== targetFormat) {
-                    return `${baseName}.${targetFormat}`;
-                } else {
-                    return `${baseName}-edited.${targetFormat}`;
-                }
             }
+
+            if (origExt.toLowerCase() !== targetFormat) return `${baseName}.${targetFormat}`;
+            return `${baseName}-edited.${targetFormat}`;
         }
-        
-        // Create line-by-line diff highlighting
+
+        // --- Diff ---
         function createDiffHtml(oldText, newText) {
-            // Split into lines
-            const oldLines = oldText.split('\n');
-            const newLines = newText.split('\n');
-            
-            // Create line-by-line diff
             const diff = Diff.diffLines(oldText, newText);
-            
-            let oldHtml = '';
-            let newHtml = '';
-            
-            let oldLineNum = 0;
-            let newLineNum = 0;
-            
+            let oldHtml = '', newHtml = '';
             diff.forEach(part => {
                 const lines = part.value.split('\n');
-                // If last entry has no newline, remove the extra empty line
                 if (lines[lines.length - 1] === '') lines.pop();
-                
-                if (part.added) {
-                    // Added lines
-                    lines.forEach(line => {
-                        newLineNum++;
-                        newHtml += `<div class="diff-added">${escapeHTML(line)}</div>`;
-                    });
-                } else if (part.removed) {
-                    // Removed lines
-                    lines.forEach(line => {
-                        oldLineNum++;
-                        oldHtml += `<div class="diff-removed">${escapeHTML(line)}</div>`;
-                    });
-                } else {
-                    // Unchanged lines
-                    lines.forEach(line => {
-                        oldLineNum++;
-                        newLineNum++;
-                        oldHtml += `<div>${escapeHTML(line)}</div>`;
-                        newHtml += `<div>${escapeHTML(line)}</div>`;
-                    });
-                }
+                const escaped = lines.map(l => `<div>${escapeHTML(l)}</div>`).join('');
+                if (part.added)        newHtml += lines.map(l => `<div class="diff-added">${escapeHTML(l)}</div>`).join('');
+                else if (part.removed) oldHtml += lines.map(l => `<div class="diff-removed">${escapeHTML(l)}</div>`).join('');
+                else { oldHtml += escaped; newHtml += escaped; }
             });
-            
-            return {
-                oldHtml,
-                newHtml
-            };
+            return { oldHtml, newHtml };
         }
-        
-        // Function to create line numbers for code display
+
         function createLineNumbers(text) {
-            const lineCount = text.split('\n').length;
-            let html = '';
-            
-            for (let i = 1; i <= lineCount; i++) {
-                html += `<div class="line-number">${i}</div>`;
-            }
-            
-            return html;
+            return text.split('\n').map((_, i) => `<div class="line-number">${i + 1}</div>`).join('');
         }
-        
-        // Apply syntax highlighting to markdown
+
         function highlightMarkdown(text) {
-            const escaped = escapeHTML(text);
-            
-            // Apply highlighting with regex replacements
-            let highlighted = escaped
-                // Headers
+            return escapeHTML(text)
                 .replace(/^(#{1,6}\s+)(.+)$/gm, '<span class="md-header">$1</span>$2')
-                // Bold
                 .replace(/(\*\*|__)(.+?)(\*\*|__)/g, '<span class="md-bold">$1$2$3</span>')
-                // Italic
                 .replace(/(\*|_)(.+?)(\*|_)/g, '<span class="md-italic">$1$2$3</span>')
-                // Links
                 .replace(/(\[.+?\])(\(.+?\))/g, '<span class="md-link">$1$2</span>')
-                // Code
                 .replace(/(`+)(.+?)(`+)/g, '<span class="md-code">$1$2$3</span>')
-                // Lists
-                .replace(/^(\s*[\-\*\+]\s+)(.+)$/gm, '<span class="md-list">$1</span>$2')
+                .replace(/^(\s*[-*+]\s+)(.+)$/gm, '<span class="md-list">$1</span>$2')
                 .replace(/^(\s*\d+\.\s+)(.+)$/gm, '<span class="md-list">$1</span>$2');
-                
-            return highlighted;
         }
-        
-        // Function to download a text file
+
         function downloadTextFile(content, fileName) {
-            const blob = new Blob([content], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = fileName;
+            const url = URL.createObjectURL(new Blob([content], { type: 'text/plain' }));
+            const a   = Object.assign(document.createElement('a'), { href: url, download: fileName });
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
-        
-        // Function to create and download zip of all files
-        async function downloadAllAsZip() {
-            const zip = new JSZip();
-            
-            // Show loading state
-            downloadAllBtn.disabled = true;
-            downloadAllBtn.innerHTML = `
-                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Creating ZIP...
-            `;
-            
-            try {
-                // Add each file to the zip
-                filesData.forEach((fileData, index) => {
-                    if (fileData.modifiedContent) {
-                        const outputFilename = generateOutputFilename(fileData.name, fileData.targetFormat, index);
-                        zip.file(outputFilename, fileData.modifiedContent);
-                    }
-                });
-                
-                // Generate and download the zip
-                const content = await zip.generateAsync({ type: 'blob' });
-                saveAs(content, 'edited-files.zip');
-                
-                showToast('All files downloaded successfully!', 'success');
-            } catch (error) {
-                console.error('Error creating zip:', error);
-                showToast('Failed to create ZIP file. Try downloading files individually.', 'error');
-            } finally {
-                // Reset button state
-                downloadAllBtn.disabled = false;
-                downloadAllBtn.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                    Download All as ZIP
-                `;
-            }
-        }
-        
-        // Download all button handler
-        downloadAllBtn.addEventListener('click', downloadAllAsZip);
-        
-        // Copy all content button handler
-        copyAllBtn.addEventListener('click', async () => {
-            // Prepare all content
-            const allContent = filesData.map((fileData, index) => {
-                const outputFilename = generateOutputFilename(fileData.name, fileData.targetFormat, index);
-                return `--- ${outputFilename} ---\n\n${fileData.modifiedContent}\n\n`;
-            }).join('');
-            
-            try {
-                await navigator.clipboard.writeText(allContent);
-                
-                // Show success state
-                copyAllBtn.classList.add('bg-green-600', 'text-white');
-                copyAllBtn.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    Copied!
-                `;
-                
-                setTimeout(() => {
-                    copyAllBtn.classList.remove('bg-green-600', 'text-white');
-                    copyAllBtn.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                        Copy All Content
-                    `;
-                }, 2000);
-                
-            } catch (err) {
-                console.error('Failed to copy:', err);
-                
-                // Show error state
-                copyAllBtn.classList.add('bg-red-600', 'text-white');
-                copyAllBtn.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    Error
-                `;
-                
-                setTimeout(() => {
-                    copyAllBtn.classList.remove('bg-red-600', 'text-white');
-                    copyAllBtn.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                        Copy All Content
-                    `;
-                }, 2000);
-            }
-        });
-        
-        // Search in results
-        resultsSearch.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            const resultItems = document.querySelectorAll('.result-item');
-            
-            resultItems.forEach(item => {
-                const filenamePart = item.querySelector('h3').textContent.toLowerCase();
-                const contentPart = item.querySelector('.preview-container pre').textContent.toLowerCase();
-                
-                if (filenamePart.includes(searchTerm) || contentPart.includes(searchTerm)) {
-                    item.style.display = '';
-                    
-                    // Highlight search term if in content
-                    if (searchTerm) {
-                        // Only do basic highlighting on visible content
-                        const preElement = item.querySelector('.preview-container pre');
-                        const originalContent = preElement.getAttribute('data-original') || preElement.textContent;
-                        
-                        if (!preElement.getAttribute('data-original')) {
-                            preElement.setAttribute('data-original', originalContent);
-                        }
-                        
-                        // Apply basic highlighting
-                        const highlightedContent = originalContent.replace(
-                            new RegExp(escapeRegExp(searchTerm), 'gi'),
-                            match => `<mark class="bg-yellow-200 dark:bg-yellow-900">${match}</mark>`
-                        );
-                        
-                        // Only apply if there's a match to avoid unnecessary DOM operations
-                        if (highlightedContent !== originalContent) {
-                            preElement.innerHTML = highlightedContent;
-                        }
-                    } else {
-                        // Restore original content
-                        const preElement = item.querySelector('.preview-container pre');
-                        const originalContent = preElement.getAttribute('data-original');
-                        if (originalContent) {
-                            preElement.textContent = originalContent;
-                        }
-                    }
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
-        
-        // Show results
+
+        // --- Results ---
         function showResults() {
             resultsContainer.innerHTML = '';
-            resultsSection.classList.remove('opacity-50', 'pointer-events-none', 'hidden');
-            
-            // Clear search field
             resultsSearch.value = '';
-            
+            resultsSection.classList.remove('opacity-50', 'pointer-events-none', 'hidden');
+
             filesData.forEach((fileData, index) => {
                 if (!fileData.modifiedContent) return;
-                
-                const originalLines = fileData.originalContent.split('\n').length;
-                const modifiedLines = fileData.modifiedContent.split('\n').length;
-                const lineChange = modifiedLines - originalLines;
-                const lineChangeText = lineChange === 0 ? 'No change in line count' :
-                                      lineChange > 0 ? `+${lineChange} lines` : `${lineChange} lines`;
-                
+
+                const origLines = fileData.originalContent.split('\n').length;
+                const modLines  = fileData.modifiedContent.split('\n').length;
+                const delta     = modLines - origLines;
+                const lineChangeText = delta === 0 ? 'No line count change' : delta > 0 ? `+${delta} lines` : `${delta} lines`;
                 const outputFilename = generateOutputFilename(fileData.name, fileData.targetFormat, index);
-                
-                const formatChange = fileData.originalFormat !== fileData.targetFormat ? 
-                    `Format: ${fileData.originalFormat.toUpperCase()} → ${fileData.targetFormat.toUpperCase()}` : '';
-                
-                const resultItem = document.createElement('div');
-                resultItem.className = 'result-item p-4 border border-gray-200 dark:border-gray-700 rounded-md';
-                
-                // Check if there's an error
-                const errorNotice = fileData.error ? 
-                    `<div class="mb-3 p-2 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 rounded text-sm">${fileData.error}</div>` : '';
-                
-                // Determine preview content and mode
-                let previewContent = '';
-                if (fileData.modifiedContent.length > 2000) {
-                    previewContent = fileData.modifiedContent.substring(0, 2000) + '... (content truncated for preview)';
-                } else {
-                    previewContent = fileData.modifiedContent;
-                }
-                
-                // Apply syntax highlighting for markdown
-                let formattedPreview = fileData.targetFormat === 'md' ? 
-                    highlightMarkdown(previewContent) : 
-                    escapeHTML(previewContent);
-                
-                resultItem.innerHTML = `
-                    <div class="flex flex-col sm:flex-row justify-between mb-3">
-                        <h3 class="font-medium text-lg mb-2 sm:mb-0">${fileData.name}</h3>
-                        <div class="flex flex-wrap gap-2">
-                            <button class="copy-btn px-3 py-1 bg-primary hover:bg-opacity-90 text-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50">Copy</button>
-                            <button class="download-btn px-3 py-1 bg-green-600 hover:bg-opacity-90 text-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-opacity-50">Download</button>
-                            <button class="compare-btn px-3 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-opacity-90 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50">Compare</button>
+                const formatChange   = fileData.originalFormat !== fileData.targetFormat
+                    ? `${fileData.originalFormat.toUpperCase()} → ${fileData.targetFormat.toUpperCase()}` : '';
+
+                const preview = fileData.modifiedContent.length > 2000
+                    ? fileData.modifiedContent.substring(0, 2000) + '… (truncated)'
+                    : fileData.modifiedContent;
+
+                const formattedPreview = fileData.targetFormat === 'md'
+                    ? highlightMarkdown(preview) : escapeHTML(preview);
+
+                const item = document.createElement('div');
+                item.className = 'result-item p-3 border border-gray-200 dark:border-gray-700 rounded-md text-sm';
+                item.innerHTML = `
+                    <div class="flex flex-col sm:flex-row justify-between mb-2 gap-2">
+                        <h3 class="font-medium">${escapeHTML(fileData.name)}</h3>
+                        <div class="flex flex-wrap gap-1.5">
+                            <button class="copy-btn px-2.5 py-1 bg-primary hover:bg-opacity-90 text-white rounded text-xs focus:outline-none">Copy</button>
+                            <button class="download-btn px-2.5 py-1 bg-green-600 hover:bg-opacity-90 text-white rounded text-xs focus:outline-none">Download</button>
+                            <button class="compare-btn px-2.5 py-1 bg-gray-200 dark:bg-gray-700 hover:bg-opacity-90 rounded text-xs focus:outline-none">Compare</button>
                         </div>
                     </div>
-                    ${errorNotice}
-                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">${lineChangeText}</div>
-                    ${formatChange ? `<div class="text-sm text-gray-500 dark:text-gray-400 mb-1">${formatChange}</div>` : ''}
-                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-3">Output: ${outputFilename}</div>
-                    <div class="preview-container">
-                        <pre class="whitespace-pre-wrap p-3 rounded-md bg-gray-100 dark:bg-gray-900 text-sm max-h-60 overflow-y-auto">${formattedPreview}</pre>
+                    ${fileData.error ? `<div class="mb-2 p-2 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 rounded text-xs">${escapeHTML(fileData.error)}</div>` : ''}
+                    <div class="text-xs text-gray-500 dark:text-gray-400">${lineChangeText}${formatChange ? ` · Format: ${formatChange}` : ''} · Output: ${escapeHTML(outputFilename)}</div>
+                    <div class="preview-container mt-2">
+                        <pre class="whitespace-pre-wrap p-2 rounded bg-gray-100 dark:bg-gray-900 text-xs max-h-48 overflow-y-auto">${formattedPreview}</pre>
                     </div>
-                    <div class="comparison-container hidden mt-4">
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div class="comparison-container hidden mt-3">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
                             <div>
-                                <div class="font-medium mb-2">Original (${fileData.originalFormat.toUpperCase()})</div>
+                                <div class="font-medium text-xs mb-1">Original (${fileData.originalFormat.toUpperCase()})</div>
                                 <div class="flex overflow-x-auto">
-                                    <div class="line-numbers min-w-[2rem] py-3 bg-gray-100 dark:bg-gray-900 text-xs select-none"></div>
-                                    <pre class="original-content whitespace-pre px-3 py-3 rounded-md bg-gray-100 dark:bg-gray-900 text-sm w-full overflow-x-auto"></pre>
+                                    <div class="line-numbers min-w-[2rem] py-2 bg-gray-100 dark:bg-gray-900 text-xs select-none"></div>
+                                    <pre class="original-content whitespace-pre px-2 py-2 rounded bg-gray-100 dark:bg-gray-900 text-xs w-full overflow-x-auto"></pre>
                                 </div>
                             </div>
                             <div>
-                                <div class="font-medium mb-2">Modified (${fileData.targetFormat.toUpperCase()})</div>
+                                <div class="font-medium text-xs mb-1">Modified (${fileData.targetFormat.toUpperCase()})</div>
                                 <div class="flex overflow-x-auto">
-                                    <div class="line-numbers min-w-[2rem] py-3 bg-gray-100 dark:bg-gray-900 text-xs select-none"></div>
-                                    <pre class="modified-content whitespace-pre px-3 py-3 rounded-md bg-gray-100 dark:bg-gray-900 text-sm w-full overflow-x-auto"></pre>
+                                    <div class="line-numbers min-w-[2rem] py-2 bg-gray-100 dark:bg-gray-900 text-xs select-none"></div>
+                                    <pre class="modified-content whitespace-pre px-2 py-2 rounded bg-gray-100 dark:bg-gray-900 text-xs w-full overflow-x-auto"></pre>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `;
-                
-                resultsContainer.appendChild(resultItem);
-                
-                // Add event listeners to buttons
-                const copyBtn = resultItem.querySelector('.copy-btn');
-                copyBtn.addEventListener('click', () => {
-                    navigator.clipboard.writeText(fileData.modifiedContent)
-                        .then(() => {
-                            const originalText = copyBtn.textContent;
-                            copyBtn.textContent = 'Copied!';
-                            copyBtn.classList.add('bg-green-600');
-                            
-                            setTimeout(() => {
-                                copyBtn.textContent = originalText;
-                                copyBtn.classList.remove('bg-green-600');
-                            }, 2000);
-                        })
-                        .catch(err => {
-                            console.error('Failed to copy:', err);
-                            const originalText = copyBtn.textContent;
-                            copyBtn.textContent = 'Error';
-                            copyBtn.classList.add('bg-red-600');
-                            
-                            setTimeout(() => {
-                                copyBtn.textContent = originalText;
-                                copyBtn.classList.remove('bg-red-600');
-                            }, 2000);
-                        });
+                    </div>`;
+
+                resultsContainer.appendChild(item);
+
+                // Copy
+                item.querySelector('.copy-btn').addEventListener('click', async function () {
+                    try {
+                        await navigator.clipboard.writeText(fileData.modifiedContent);
+                        setBtn(this, 'Copied!', 'bg-green-600');
+                    } catch {
+                        setBtn(this, 'Error', 'bg-red-600');
+                    }
                 });
-                
-                const downloadBtn = resultItem.querySelector('.download-btn');
-                downloadBtn.addEventListener('click', () => {
-                    const outputFilename = generateOutputFilename(fileData.name, fileData.targetFormat, index);
-                    downloadTextFile(fileData.modifiedContent, outputFilename);
+
+                // Download
+                item.querySelector('.download-btn').addEventListener('click', () => {
+                    downloadTextFile(fileData.modifiedContent, generateOutputFilename(fileData.name, fileData.targetFormat, index));
                 });
-                
-                const compareBtn = resultItem.querySelector('.compare-btn');
-                const comparisonContainer = resultItem.querySelector('.comparison-container');
+
+                // Compare
+                const compareBtn  = item.querySelector('.compare-btn');
+                const comparePane = item.querySelector('.comparison-container');
                 compareBtn.addEventListener('click', () => {
-                    if (comparisonContainer.classList.contains('hidden')) {
-                        comparisonContainer.classList.remove('hidden');
-                        compareBtn.textContent = 'Hide Comparison';
-                        
-                        // Lazy-load the diff view
-                        const originalContentElem = comparisonContainer.querySelector('.original-content');
-                        const modifiedContentElem = comparisonContainer.querySelector('.modified-content');
-                        const lineNumbersElems = comparisonContainer.querySelectorAll('.line-numbers');
-                        
-                        // Create diff HTML
+                    const hidden = comparePane.classList.toggle('hidden');
+                    compareBtn.textContent = hidden ? 'Compare' : 'Hide';
+                    if (!hidden && !comparePane.dataset.loaded) {
                         const { oldHtml, newHtml } = createDiffHtml(fileData.originalContent, fileData.modifiedContent);
-                        
-                        // Set content
-                        originalContentElem.innerHTML = oldHtml;
-                        modifiedContentElem.innerHTML = newHtml;
-                        
-                        // Add line numbers
-                        lineNumbersElems[0].innerHTML = createLineNumbers(fileData.originalContent);
-                        lineNumbersElems[1].innerHTML = createLineNumbers(fileData.modifiedContent);
-                    } else {
-                        comparisonContainer.classList.add('hidden');
-                        compareBtn.textContent = 'Compare';
+                        comparePane.querySelector('.original-content').innerHTML = oldHtml;
+                        comparePane.querySelector('.modified-content').innerHTML = newHtml;
+                        comparePane.querySelectorAll('.line-numbers')[0].innerHTML = createLineNumbers(fileData.originalContent);
+                        comparePane.querySelectorAll('.line-numbers')[1].innerHTML = createLineNumbers(fileData.modifiedContent);
+                        comparePane.dataset.loaded = '1';
                     }
                 });
             });
         }
-        
-        // Helper function to escape HTML
-        function escapeHTML(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+
+        function setBtn(btn, label, cls) {
+            const orig = btn.textContent;
+            btn.textContent = label;
+            btn.classList.add(cls);
+            setTimeout(() => { btn.textContent = orig; btn.classList.remove(cls); }, 2000);
         }
+
+        // --- Download all as ZIP ---
+        async function downloadAllAsZip() {
+            const zip = new JSZip();
+            downloadAllBtn.disabled = true;
+            const origHTML = downloadAllBtn.innerHTML;
+            downloadAllBtn.innerHTML = `<svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Creating ZIP...`;
+            try {
+                filesData.forEach((fd, i) => {
+                    if (fd.modifiedContent !== null)
+                        zip.file(generateOutputFilename(fd.name, fd.targetFormat, i), fd.modifiedContent);
+                });
+                saveAs(await zip.generateAsync({ type: 'blob' }), 'edited-files.zip');
+                showToast('All files downloaded!', 'success');
+            } catch (e) {
+                console.error(e);
+                showToast('Failed to create ZIP. Try downloading individually.', 'error');
+            } finally {
+                downloadAllBtn.disabled = false;
+                downloadAllBtn.innerHTML = origHTML;
+            }
+        }
+        downloadAllBtn.addEventListener('click', downloadAllAsZip);
+
+        // --- Copy all ---
+        copyAllBtn.addEventListener('click', async () => {
+            const allContent = filesData
+                .filter(fd => fd.modifiedContent !== null)
+                .map((fd, i) => `--- ${generateOutputFilename(fd.name, fd.targetFormat, i)} ---\n\n${fd.modifiedContent}\n\n`)
+                .join('');
+            const origHTML = copyAllBtn.innerHTML;
+            try {
+                await navigator.clipboard.writeText(allContent);
+                copyAllBtn.classList.add('bg-green-600', 'text-white');
+                copyAllBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Copied!`;
+            } catch {
+                copyAllBtn.classList.add('bg-red-600', 'text-white');
+                copyAllBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg> Error`;
+            }
+            setTimeout(() => {
+                copyAllBtn.classList.remove('bg-green-600', 'bg-red-600', 'text-white');
+                copyAllBtn.innerHTML = origHTML;
+            }, 2000);
+        });
+
+        // --- Search in results ---
+        resultsSearch.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.result-item').forEach(item => {
+                const fname   = item.querySelector('h3').textContent.toLowerCase();
+                const pre     = item.querySelector('.preview-container pre');
+                const content = (pre.getAttribute('data-original') || pre.textContent).toLowerCase();
+                const match   = !term || fname.includes(term) || content.includes(term);
+                item.style.display = match ? '' : 'none';
+
+                if (match && term) {
+                    if (!pre.getAttribute('data-original')) pre.setAttribute('data-original', pre.textContent);
+                    const orig = pre.getAttribute('data-original');
+                    pre.innerHTML = escapeHTML(orig).replace(
+                        new RegExp(escapeRegExp(escapeHTML(term)), 'gi'),
+                        m => `<mark class="bg-yellow-200 dark:bg-yellow-900">${m}</mark>`
+                    );
+                } else if (!term && pre.getAttribute('data-original')) {
+                    pre.textContent = pre.getAttribute('data-original');
+                    pre.removeAttribute('data-original');
+                }
+            });
+        });
     </script>
 </body>
 </html>
